@@ -115,3 +115,7 @@ kbd {
 .keyboard_key[data-fn="true"] {
   background-color: #444444;
 }
+
+.keyboard_key.active {
+  background-color: rgb(72, 247, 188);
+}

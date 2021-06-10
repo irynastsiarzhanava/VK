@@ -10,6 +10,6 @@ const rowsOrder = [
   ['ControlLeft', 'AltLeft', 'MetaLeft', 'Space', 'MetaRight', 'AltRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', 'ArrowRight'],
 ];
 
-const lang = get('kblang', '"en"');
+const lang = get('kbLang', '"en"');
 
 new Keyboard(rowsOrder).init(lang).generateLayout();
