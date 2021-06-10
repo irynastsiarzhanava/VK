@@ -285,7 +285,7 @@ export default [
     code: 'MetaLeft',
   },
   {
-    small: '&#9251;',
+    small: ' ',
     shift: null,
     code: 'Space',
   },

@@ -6,7 +6,7 @@ export default class Key {
     this.small = small;
     this.shift = shift;
     this.code = code;
-    this.isFnKey = Boolean(small.match(/control | arr | option | command | &#8679 | &#8677 | &#9003 | &#8682 /));
+    this.isFnKey = Boolean(code.match(/Control|Alt|Meta|Space|Arrow|Shift|Tab|Caps|Enter|Backspace/));
     if (shift && shift.match(/[^a-zA-Zа-яА-Я0-9ёЁ]/)) {
       this.sub = create('div', 'sub', this.shift);
     } else {

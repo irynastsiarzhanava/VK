@@ -7,8 +7,7 @@ import Key from './Key.js';
 
 const main = create('main', '',
   [create('h1', 'title', 'RSS Virtual Keyboard'),
-    create('h3', 'subtitle', 'Macbook Keyboard'),
-    create('h3', 'subtitle', 'Macbook Keyboard'),
+    create('h3', 'subtitle', 'MacBook Keyboard Layout'),
     create('p', 'hint', 'Use <kbd>control</kbd> + <kbd>Space</kbd> to switch language. Last language saves in localStorage'),
   ]);
 
@@ -36,7 +35,7 @@ export default class Keyboard {
     this.keyButtons = [];
     this.rowsOrder.forEach((row, i) => {
       const rowElement = create('div', 'keyboard_row', null, this.container, ['row', i + 1]);
-      rowElement.style.gridTemplateColumns = `repeat(${row.length}, 1fr)`;
+      rowElement.style.gridTemplateColumns = `repeat(${row.length})`;
       row.forEach((code) => {
         const keyObj = this.keyBase.find((key) => key.code === code);
         if (keyObj) {
@@ -46,5 +45,11 @@ export default class Keyboard {
         }
       });
     });
+    document.addEventListener('keydown', this.handleEvent);
+    document.addEventListener('keyup', this.handleEvent);
+  }
+
+  handleEvent = () => {
+    
   }
 }

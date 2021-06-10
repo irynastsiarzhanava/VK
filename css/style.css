@@ -1,0 +1,117 @@
+main {
+  width: 870px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+h1 {
+  font-family: 'Amatic SC', cursive;
+  font-size: 55px;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+h3 {
+  font-family: 'Amatic SC', cursive;
+  font-size: 25px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+.hint {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 15px;
+}
+
+kbd {
+  border-radius: 3px;
+  padding: 1px 2px 0;
+  border: 1px solid #000000;
+}
+
+.output {
+  width: 99%;
+  height: 150px;
+  margin-bottom: 10px;
+}
+
+.keyboard {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+}
+
+.keyboard_row {
+  display: flex;
+  flex-flow: row nowrap;
+  margin-bottom: 3px;
+}
+
+.keyboard_key {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-left: 3px;
+  width: 57px;
+  height: 57px;
+  background-color: #6d6d6d;
+  color: #ffffff;
+  border-radius: 3px;
+}
+
+.keyboard_key[data-code="Backquote"],
+.keyboard_key[data-code="Tab"],
+.keyboard_key[data-code="CapsLock"],
+.keyboard_key[data-code="ShiftLeft"],
+.keyboard_key[data-code="ControlLeft"] {
+  margin-left: 0;
+}
+
+.keyboard_key[data-code="Backspace"] {
+  width: 90px;
+}
+
+.keyboard_key[data-code="Tab"] {
+  width: 87px;
+}
+
+.keyboard_key[data-code="CapsLock"] {
+  width: 103px;
+}
+
+.keyboard_key[data-code="Enter"] {
+  width: 60px;
+}
+
+.keyboard_key[data-code="Backslash"] {
+  width: 104px;
+}
+
+.keyboard_key[data-code="ShiftLeft"] {
+  width: 73px;
+}
+
+.keyboard_key[data-code="ShiftRight"] {
+  width: 135px;
+}
+
+.keyboard_key[data-code="ControlLeft"] {
+  width: 121px;
+}
+
+.keyboard_key[data-code^="Meta"] {
+  width: 70px;
+}
+
+.keyboard_key[data-code="ArrowUp"],
+.keyboard_key[data-code="ArrowDown"] {
+  width: 29px;
+}
+
+.keyboard_key[data-code="Space"] {
+  width: 297px;
+}
+
+.keyboard_key[data-fn="true"] {
+  background-color: #444444;
+}
