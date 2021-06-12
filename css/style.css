@@ -39,6 +39,7 @@ kbd {
 
 .keyboard {
   font-family: 'Exo 2', sans-serif;
+  font-size: 15px;
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
@@ -121,5 +122,21 @@ kbd {
 }
 
 .keyboard_key.active {
-  background-color: rgb(72, 247, 188);
+  background-color: #48f7bd;
+}
+
+.sub:not(:empty) {
+  transform: translate(-10px);
+  color: #c2c2c2;
+  font-size: 10px;
+}
+.sub.sub-active {
+  color: #48f7bd;
+  font-size: 15px;
+}
+
+.letter.sub-inactive {
+  transform: translate(10px);
+  color: #c2c2c2;
+  font-size: 10px;
 }

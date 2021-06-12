@@ -47,6 +47,23 @@ export default class Keyboard {
     });
     document.addEventListener('keydown', this.handleEvent);
     document.addEventListener('keyup', this.handleEvent);
+    this.container.onmousedown = this.preHandleEvent;
+    this.container.onmouseup = this.preHandleEvent;
+  }
+
+  preHandleEvent = (e) => {
+    e.stopPropagation();
+    const keyDiv = e.target.closest('.keyboard_key');
+    if (!keyDiv) return;
+    const { dataset: { code } } = keyDiv;
+    keyDiv.addEventListener('mouseleave', this.resetButtonState);
+    this.handleEvent({ code, type: e.type });
+  }
+
+  resetButtonState = ({ target: { dataset: { code } } }) => {
+    const keyObj = this.keyButtons.find((key) => key.code === code);
+    keyObj.div.classList.remove('active');
+    keyObj.div.removeEventListener('mouseleave', this.resetButtonState);
   }
 
   handleEvent = (e) => {
@@ -58,17 +75,28 @@ export default class Keyboard {
 
     if (type.match(/keydown|mousedown/)) {
       if (type.match(/key/)) e.preventDefault();
-
       if (code.match(/Shift/)) this.shiftKey = true;
+      if (this.shiftKey) this.switchUpperCase(true);
+
       keyObj.div.classList.add('active');
+
+      // Handle  Caps down
+      if (code.match(/Caps/) && !this.isCaps) {
+        this.isCaps = true;
+        this.switchUpperCase(true);
+      } else if (code.match(/Caps/) && this.isCaps) {
+        this.isCaps = false;
+        this.switchUpperCase(false);
+        keyObj.div.classList.remove('active');
+      }
 
       // Switch language
       if (code.match(/ControlLeft/)) this.ctrlKey = true;
       if (code.match(/Meta/)) this.commandKey = true;
-
       if (code.match(/Meta/) && this.ctrlKey) this.switchLanguage();
       if (code.match(/ControlLeft/) && this.commandKey) this.switchLanguage();
 
+      // Print output
       if (!this.isCaps) {
         this.printOutput(keyObj, this.shiftKey ? keyObj.shift : keyObj.small);
       } else if (this.isCaps) {
@@ -79,11 +107,13 @@ export default class Keyboard {
         }
       }
     } else if (type.match(/keyup|mouseup/)) {
-      keyObj.div.classList.remove('active');
-
-      if (code.match(/Shift/)) this.shiftKey = false;
-      if (code.match(/ControlLeft/)) this.ctrlKey = false;
+      if (code.match(/Shift/)) {
+        this.shiftKey = false;
+        this.switchUpperCase(false);
+      }
+      if (code.match(/Control/)) this.ctrlKey = false;
       if (code.match(/Meta/)) this.commandKey = false;
+      if (!code.match(/Caps/)) keyObj.div.classList.remove('active');
     }
   }
 
@@ -108,6 +138,47 @@ export default class Keyboard {
       }
       button.letter.innerHTML = keyObj.small;
     });
+
+    if (this.isCaps) this.switchUpperCase(true);
+  }
+
+  switchUpperCase = (isTrue) => {
+    if (isTrue) {
+      this.keyButtons.forEach((button) => {
+        if (button.sub.innerHTML) {
+          if (this.shiftKey) {
+            button.sub.classList.add('sub-active');
+            button.letter.classList.add('sub-inactive');
+          }
+        }
+        if (!button.isFnKey && this.isCaps && !this.shiftKey && !button.sub.innerHTML) {
+          button.letter.innerHTML = button.shift;
+        } else if (!button.isFnKey && this.isCaps && this.shiftKey) {
+          button.letter.innerHTML = button.small;
+        } else if (!button.isFnKey && !button.sub.innerHTML) {
+          button.letter.innerHTML = button.shift;
+        }
+      });
+    } else {
+      this.keyButtons.forEach((button) => {
+        if (button.sub.innerHTML && !button.isFnKey) {
+          button.sub.classList.remove('sub-active');
+          button.letter.classList.remove('sub-inactive');
+
+          if (this.isCaps && this.shiftKey) {
+            button.letter.innerHTML = button.small;
+          } else if (this.isCaps && !this.shiftKey) {
+            button.letter.innerHTML = button.shift;
+          }
+        } else if (!button.isFnKey && !button.sub.innerHTML) {
+          if (this.isCaps) {
+            button.letter.innerHTML = button.shift;
+          } else {
+            button.letter.innerHTML = button.small;
+          }
+        }
+      });
+    }
   }
 
   printOutput(keyObj, symbol) {
