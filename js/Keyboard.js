@@ -8,7 +8,7 @@ import Key from './Key.js';
 const main = create('main', '',
   [create('h1', 'title', 'RSS Virtual Keyboard'),
     create('h3', 'subtitle', 'MacBook Keyboard Layout'),
-    create('p', 'hint', 'Use <kbd>Option</kbd> + <kbd>Space</kbd> to switch language. Last language saves in localStorage'),
+    create('p', 'hint', 'Use <kbd>Control</kbd> + <kbd>Command</kbd> to switch language. Last language saves in localStorage'),
   ]);
 
 export default class Keyboard {
@@ -58,18 +58,32 @@ export default class Keyboard {
 
     if (type.match(/keydown|mousedown/)) {
       if (type.match(/key/)) e.preventDefault();
+
+      if (code.match(/Shift/)) this.shiftKey = true;
       keyObj.div.classList.add('active');
 
       // Switch language
-      if (code.match(/AltLeft/)) this.ctrlKey = true;
-      if (code.match(/Space/)) this.spaceKey = true;
+      if (code.match(/ControlLeft/)) this.ctrlKey = true;
+      if (code.match(/Meta/)) this.commandKey = true;
 
-      if (code.match(/AltLeft/) && this.spaceKey) this.switchLanguage();
-      if (code.match(/Space/) && this.ctrlKey) this.switchLanguage();
+      if (code.match(/Meta/) && this.ctrlKey) this.switchLanguage();
+      if (code.match(/ControlLeft/) && this.commandKey) this.switchLanguage();
+
+      if (!this.isCaps) {
+        this.printOutput(keyObj, this.shiftKey ? keyObj.shift : keyObj.small);
+      } else if (this.isCaps) {
+        if (this.shiftKey) {
+          this.printOutput(keyObj, keyObj.sub.innerHTML ? keyObj.shift : keyObj.small);
+        } else {
+          this.printOutput(keyObj, !keyObj.sub.innerHTML ? keyObj.shift : keyObj.small);
+        }
+      }
     } else if (type.match(/keyup|mouseup/)) {
       keyObj.div.classList.remove('active');
-      if (code.match(/AltLeft/)) this.ctrlKey = false;
-      if (code.match(/Space/)) this.spaceKey = false;
+
+      if (code.match(/Shift/)) this.shiftKey = false;
+      if (code.match(/ControlLeft/)) this.ctrlKey = false;
+      if (code.match(/Meta/)) this.commandKey = false;
     }
   }
 
@@ -94,5 +108,54 @@ export default class Keyboard {
       }
       button.letter.innerHTML = keyObj.small;
     });
+  }
+
+  printOutput(keyObj, symbol) {
+    let cursorPos = this.output.selectionStart;
+    const left = this.output.value.slice(0, cursorPos);
+    const right = this.output.value.slice(cursorPos);
+
+    const fnButtonsHandler = {
+      Tab: () => {
+        this.output.value = `${left}\t${right}`;
+        cursorPos += 1;
+      },
+      ArrowLeft: () => {
+        cursorPos = cursorPos - 1 >= 0 ? cursorPos - 1 : 0;
+      },
+      ArrowRight: () => {
+        cursorPos += 1;
+      },
+      ArrowUp: () => {
+        const positionFromLeft = this.output.value.slice(0, cursorPos).match(/(\n).*$(?!\1)/g) || [[1]];
+        cursorPos = positionFromLeft[0].length;
+      },
+      ArrowDown: () => {
+        const positionFromLeft = this.output.value.slice(cursorPos).match(/^.*(\n).*(?!\1)/) || [[1]];
+        cursorPos = positionFromLeft[0].length;
+      },
+      Enter: () => {
+        this.output.value = `${left}\n${right}`;
+        cursorPos += 1;
+      },
+      Delete: () => {
+        this.output.value = `${left}${right.slice(1)}`;
+      },
+      Backspace: () => {
+        this.output.value = `${left.slice(0, -1)}${right}`;
+        cursorPos -= 1;
+      },
+      Space: () => {
+        this.output.value = `${left} ${right}`;
+        cursorPos += 1;
+      },
+    };
+
+    if (fnButtonsHandler[keyObj.code]) fnButtonsHandler[keyObj.code]();
+    else if (!keyObj.isFnKey) {
+      cursorPos += 1;
+      this.output.value = `${left}${symbol || ''}${right}`;
+    }
+    this.output.setSelectionRange(cursorPos, cursorPos);
   }
 }
