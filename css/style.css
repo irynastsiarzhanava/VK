@@ -133,6 +133,7 @@ kbd {
 .sub.sub-active {
   color: #48f7bd;
   font-size: 15px;
+  font-weight: bold;
 }
 
 .letter.sub-inactive {
